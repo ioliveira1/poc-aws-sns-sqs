@@ -1,6 +1,6 @@
 package com.example.aws.consumers.controllers;
 
-import com.example.aws.consumers.controllers.dtos.response.MessageResponseDTO;
+import com.example.aws.consumers.controllers.dtos.responses.MessageResponseDTO;
 import com.example.aws.consumers.services.ConsumerService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

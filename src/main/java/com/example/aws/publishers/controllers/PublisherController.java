@@ -1,6 +1,6 @@
 package com.example.aws.publishers.controllers;
 
-import com.example.aws.publishers.controllers.dtos.request.MessageRequestDTO;
+import com.example.aws.publishers.controllers.dtos.requests.MessageRequestDTO;
 import com.example.aws.publishers.services.PublisherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

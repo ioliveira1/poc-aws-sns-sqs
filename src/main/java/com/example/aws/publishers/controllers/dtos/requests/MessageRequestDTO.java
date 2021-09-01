@@ -1,4 +1,4 @@
-package com.example.aws.publishers.controllers.dtos.request;
+package com.example.aws.publishers.controllers.dtos.requests;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

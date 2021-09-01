@@ -5,12 +5,11 @@ import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.sqs.AmazonSQS;
 import com.amazonaws.services.sqs.AmazonSQSClientBuilder;
 import com.amazonaws.services.sqs.model.Message;
-import com.example.aws.consumers.controllers.dtos.response.MessageResponseDTO;
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.example.aws.consumers.controllers.dtos.responses.MessageResponseDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.cloud.aws.messaging.listener.annotation.SqsListener;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -35,7 +34,6 @@ public class ConsumerService {
     @Value("${aws.queue}")
     private String queue;
 
-    @Scheduled(fixedRate = 5000)
     public List<MessageResponseDTO> getMessage() {
         log.info("Verificando mensagens na fila");
         final List<MessageResponseDTO> messages = new ArrayList<>();
@@ -57,12 +55,17 @@ public class ConsumerService {
                 ObjectMapper mapper = new ObjectMapper();
                 try {
                     messages.add(mapper.readValue(body.getBody(), MessageResponseDTO.class));
-                } catch (JsonProcessingException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         }
         return messages;
+    }
+
+    @SqsListener("${aws.queue}")
+    public void sqsListener(String message) {
+        log.info("teste: {}", message);
     }
 
 }
