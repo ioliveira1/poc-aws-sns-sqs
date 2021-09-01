@@ -1,9 +1,6 @@
 package com.example.aws.consumers.services;
 
-import com.amazonaws.auth.AWSStaticCredentialsProvider;
-import com.amazonaws.auth.BasicAWSCredentials;
-import com.amazonaws.services.sqs.AmazonSQS;
-import com.amazonaws.services.sqs.AmazonSQSClientBuilder;
+import com.amazonaws.services.sqs.AmazonSQSAsync;
 import com.amazonaws.services.sqs.model.Message;
 import com.example.aws.consumers.controllers.dtos.responses.MessageResponseDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -19,34 +16,21 @@ import java.util.List;
 @Slf4j
 public class ConsumerService {
 
-    @Value("${aws.arn}")
-    private String arn;
-
-    @Value("${aws.access_key_id}")
-    private String accessKey;
-
-    @Value("${aws.secret_access_key}")
-    private String secretKey;
-
-    @Value("${aws.region}")
-    private String region;
-
     @Value("${aws.queue}")
     private String queue;
+
+    private final AmazonSQSAsync amazonSQSAsync;
+
+    public ConsumerService(final AmazonSQSAsync amazonSQSAsync) {
+        this.amazonSQSAsync = amazonSQSAsync;
+    }
 
     public List<MessageResponseDTO> getMessage() {
         log.info("Verificando mensagens na fila");
         final List<MessageResponseDTO> messages = new ArrayList<>();
-        BasicAWSCredentials credentials = new BasicAWSCredentials(accessKey, secretKey);
 
-        final AmazonSQS amazonSQS = AmazonSQSClientBuilder
-                .standard()
-                .withRegion(region)
-                .withCredentials(new AWSStaticCredentialsProvider(credentials))
-                .build();
-
-        final List<Message> messageList = amazonSQS
-                .receiveMessage(amazonSQS.getQueueUrl(queue).getQueueUrl())
+        final List<Message> messageList = amazonSQSAsync
+                .receiveMessage(amazonSQSAsync.getQueueUrl(queue).getQueueUrl())
                 .getMessages();
 
         if (!messageList.isEmpty()) {
@@ -65,7 +49,7 @@ public class ConsumerService {
 
     @SqsListener("${aws.queue}")
     public void sqsListener(String message) {
-        log.info("teste: {}", message);
+        log.info("Message: {}", message);
     }
 
 }
