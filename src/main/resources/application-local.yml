@@ -1,0 +1,6 @@
+aws:
+  arn: arn:aws:sns:us-east-1:000000000000:sqs-status
+  access_key_id: banana
+  secret_access_key: banana
+  region: us-east-1
+  queue: status-queue
