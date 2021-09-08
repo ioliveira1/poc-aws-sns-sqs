@@ -1,5 +1,6 @@
 package com.example.aws.configs;
 
+import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.client.builder.AwsClientBuilder;
@@ -22,17 +23,8 @@ import org.springframework.validation.Validator;
 import java.util.Collections;
 
 @Configuration
-@Profile({"default"})
-public class SQSListenerConfig {
-
-    @Value("${aws.access_key_id}")
-    private String accessKey;
-
-    @Value("${aws.secret_access_key}")
-    private String secretKey;
-
-    @Value("${aws.region}")
-    private String region;
+@Profile({"local"})
+public class SQSListenerConfigLocal {
 
     @Bean
     SimpleMessageListenerContainer simpleMessageListenerContainer(final AmazonSQSAsync amazonSQSAsync,
@@ -47,10 +39,13 @@ public class SQSListenerConfig {
 
     @Bean
     AmazonSQSAsync amazonSQSAsync() {
-        BasicAWSCredentials credentials = new BasicAWSCredentials(accessKey, secretKey);
+        final AWSCredentials awsCredentials = new BasicAWSCredentials("accessKey", "secretKey");
         return AmazonSQSAsyncClientBuilder.standard()
-                .withRegion(region)
-                .withCredentials(new AWSStaticCredentialsProvider(credentials))
+                .withEndpointConfiguration( new AwsClientBuilder.EndpointConfiguration(
+                        "http://localhost:4576",
+                        Regions.US_EAST_1.getName()
+                ))
+                .withCredentials(new AWSStaticCredentialsProvider(awsCredentials))
                 .build();
     }
 
