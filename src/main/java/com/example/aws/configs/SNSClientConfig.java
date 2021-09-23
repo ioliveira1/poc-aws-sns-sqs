@@ -1,12 +1,7 @@
 package com.example.aws.configs;
 
-import com.amazonaws.auth.AWSCredentials;
-import com.amazonaws.auth.AWSCredentialsProvider;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
-import com.amazonaws.client.builder.AwsClientBuilder;
-import com.amazonaws.regions.Regions;
-import com.amazonaws.services.sns.AmazonSNSAsyncClientBuilder;
 import com.amazonaws.services.sns.AmazonSNSClient;
 import com.amazonaws.services.sns.AmazonSNSClientBuilder;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,14 +26,10 @@ public class SNSClientConfig {
     @Bean
     @Primary
     public AmazonSNSClient createClient() {
-        BasicAWSCredentials credentials = new BasicAWSCredentials(accessKey, secretKey);
-
-        final AmazonSNSClient snsClient = (AmazonSNSClient) AmazonSNSClientBuilder
+        return (AmazonSNSClient) AmazonSNSClientBuilder
                 .standard()
                 .withRegion(region)
-                .withCredentials(new AWSStaticCredentialsProvider(credentials))
+                .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials(accessKey, secretKey)))
                 .build();
-
-        return snsClient;
     }
 }

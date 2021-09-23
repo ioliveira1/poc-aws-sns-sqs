@@ -1,6 +1,5 @@
 package com.example.aws.configs;
 
-import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.client.builder.AwsClientBuilder;
@@ -8,7 +7,6 @@ import com.amazonaws.regions.Regions;
 import com.amazonaws.services.sqs.AmazonSQSAsync;
 import com.amazonaws.services.sqs.AmazonSQSAsyncClientBuilder;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.aws.messaging.config.QueueMessageHandlerFactory;
 import org.springframework.cloud.aws.messaging.listener.QueueMessageHandler;
 import org.springframework.cloud.aws.messaging.listener.SimpleMessageListenerContainer;
@@ -29,7 +27,6 @@ public class SQSListenerConfigLocal {
     @Bean
     SimpleMessageListenerContainer simpleMessageListenerContainer(final AmazonSQSAsync amazonSQSAsync,
                                                                   final QueueMessageHandler queueMessageHandler) {
-
         final SimpleMessageListenerContainer simpleMessageListenerContainer = new SimpleMessageListenerContainer();
         simpleMessageListenerContainer.setAmazonSqs(amazonSQSAsync);
         simpleMessageListenerContainer.setMessageHandler(queueMessageHandler);
@@ -39,13 +36,12 @@ public class SQSListenerConfigLocal {
 
     @Bean
     AmazonSQSAsync amazonSQSAsync() {
-        final AWSCredentials awsCredentials = new BasicAWSCredentials("accessKey", "secretKey");
         return AmazonSQSAsyncClientBuilder.standard()
-                .withEndpointConfiguration( new AwsClientBuilder.EndpointConfiguration(
+                .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(
                         "http://localhost:4576",
                         Regions.US_EAST_1.getName()
                 ))
-                .withCredentials(new AWSStaticCredentialsProvider(awsCredentials))
+                .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials("accessKey", "secretKey")))
                 .build();
     }
 

@@ -2,8 +2,6 @@ package com.example.aws.configs;
 
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
-import com.amazonaws.client.builder.AwsClientBuilder;
-import com.amazonaws.regions.Regions;
 import com.amazonaws.services.sqs.AmazonSQSAsync;
 import com.amazonaws.services.sqs.AmazonSQSAsyncClientBuilder;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -37,7 +35,6 @@ public class SQSListenerConfig {
     @Bean
     SimpleMessageListenerContainer simpleMessageListenerContainer(final AmazonSQSAsync amazonSQSAsync,
                                                                   final QueueMessageHandler queueMessageHandler) {
-
         final SimpleMessageListenerContainer simpleMessageListenerContainer = new SimpleMessageListenerContainer();
         simpleMessageListenerContainer.setAmazonSqs(amazonSQSAsync);
         simpleMessageListenerContainer.setMessageHandler(queueMessageHandler);
@@ -47,10 +44,9 @@ public class SQSListenerConfig {
 
     @Bean
     AmazonSQSAsync amazonSQSAsync() {
-        BasicAWSCredentials credentials = new BasicAWSCredentials(accessKey, secretKey);
         return AmazonSQSAsyncClientBuilder.standard()
                 .withRegion(region)
-                .withCredentials(new AWSStaticCredentialsProvider(credentials))
+                .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials(accessKey, secretKey)))
                 .build();
     }
 
